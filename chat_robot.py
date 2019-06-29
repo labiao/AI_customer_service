@@ -1,6 +1,13 @@
 # !/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+'''
+文件描述：基于微信公众号实现AI客服
+作者：labiao
+邮箱：1725089507@qq.com
+时间：2019-6-29 16:06
+'''
+
 import urllib.request
 import urllib.parse
 def get_robot_reply(question):
