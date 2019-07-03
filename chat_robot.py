@@ -25,10 +25,8 @@ app = flask.Flask(__name__)
 def get_robot_reply(question):
     '''
     函数功能：对于特定问题进行特定回复，对于其他非特定问题进行智能回复
-
     参数描述：
     question 聊天内容或问题
-
     返回值：str，回复内容
     '''
     if "你叫什么名字" in question:
@@ -95,7 +93,7 @@ def weixin_handler():
 def text_reply(msg):
     info = msg
     api_url = 'http://www.tuling123.com/openapi/api'
-    api_key = '6626a1c63fcc456485a0897df43ac8bb'
+    api_key = 'd435f47dbe844545b683c9caa0ca5dde'
     data = {"key": api_key, "info": info}
     response=requests.post(api_url,data).content
     s = json.loads(response, encoding='utf-8')  #通过json中的loads方法，将其转变成Python中的字典对象来出来
