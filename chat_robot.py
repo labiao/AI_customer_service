@@ -12,6 +12,11 @@ import urllib.request
 import urllib.parse
 import flask
 import wechatpy
+import json
+
+import time,hashlib,re,requests
+import xml.etree.ElementTree as ET
+
 from wechatpy.utils import check_signature
 from wechatpy.exceptions import InvalidSignatureException
 
@@ -60,7 +65,41 @@ def weixin_handler():
     if flask.request.method == "GET":
         return echostr
     elif flask.request.method == "POST":
-        print(flask.request.data)
+        # print(flask.request.data)
+        # 得到xml数据
+        xmlData = ET.fromstring(flask.request.stream.read())
+        # 得到粉丝发送的数据类型
+        msg_type = xmlData.find('MsgType').text
+        if msg_type == 'text':
+            ToUserName = xmlData.find('ToUserName').text
+            FromUserName = xmlData.find('FromUserName').text
+            Content = xmlData.find('Content').text  #得到粉丝发送的内容
+            if "你叫什么" in Content:
+                Content = "郑道远"
+            elif "你们小组编号" in Content:
+                Content = "7"
+            elif "你们小组成员" in Content:
+                Content = "周紫齐（组长），郑道远，陈雷，帅田，谭新宇，王文栋，徐雨洁，卢文卓"
+            else:
+                Content = text_reply(Content)
+            reply = '''<xml>
+                    <ToUserName><![CDATA[%s]]></ToUserName>
+                    <FromUserName><![CDATA[%s]]></FromUserName>
+                    <CreateTime>%s</CreateTime>
+                    <MsgType><![CDATA[text]]></MsgType>
+                    <Content><![CDATA[%s]]></Content>
+                    </xml>'''
+            response = flask.make_response(reply % (FromUserName, ToUserName, str(int(time.time())), Content ))
+            response.content_type = 'application/xml'
+            return response
+def text_reply(msg):
+    info = msg
+    api_url = 'http://www.tuling123.com/openapi/api'
+    api_key = '6626a1c63fcc456485a0897df43ac8bb'
+    data = {"key": api_key, "info": info}
+    response=requests.post(api_url,data).content
+    s = json.loads(response, encoding='utf-8')  #通过json中的loads方法，将其转变成Python中的字典对象来出来
+    return s['text']
 if __name__ == '__main__':
     # print( get_robot_reply("你叫什么名字"))
     # print( get_robot_reply("你多少岁"))
