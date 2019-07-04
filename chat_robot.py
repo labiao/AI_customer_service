@@ -91,13 +91,15 @@ def weixin_handler():
             response.content_type = 'application/xml'
             return response
 def text_reply(msg):
-    info = msg
-    api_url = 'http://www.tuling123.com/openapi/api'
-    api_key = 'd435f47dbe844545b683c9caa0ca5dde'
-    data = {"key": api_key, "info": info}
-    response=requests.post(api_url,data).content
-    s = json.loads(response, encoding='utf-8')  #通过json中的loads方法，将其转变成Python中的字典对象来出来
-    return s['text']
+    print(msg)
+    moli_data = {
+        "question": msg,
+        "api_key": "你的api的key",
+        "api_secret": "你的密钥"
+    }
+    moli_api_url = 'http://i.itpk.cn/api.php'
+    m = requests.post(moli_api_url, data=moli_data)
+    return m.text
 if __name__ == '__main__':
     # print( get_robot_reply("你叫什么名字"))
     # print( get_robot_reply("你多少岁"))
